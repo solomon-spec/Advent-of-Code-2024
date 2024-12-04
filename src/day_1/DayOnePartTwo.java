@@ -8,7 +8,6 @@ import static java.lang.Math.abs;
 public class DayOnePartTwo {
     public static void main(String[] args) {
         List<Integer> list1 = new ArrayList<>();
-        List<Integer> list2 = new ArrayList<>();
         Map<Integer,Integer> count = new HashMap<>();
         try{
             File file = new File("/home/tikursew/Documents/Advent of Code 2024/src/day_1/input.txt");
