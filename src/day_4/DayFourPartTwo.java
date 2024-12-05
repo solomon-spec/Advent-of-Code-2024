@@ -6,25 +6,20 @@ import java.util.*;
 public class DayFourPartTwo {
     static List<String> grid;
     static boolean checkMas(int r, int c){
-        if(grid.get(r).charAt(c) == 'A'){
-            boolean diagonalNotEqual = grid.get(r-1).charAt(c-1) != grid.get(r+1).charAt(c+1);
-            boolean diagonal2NotEqual = grid.get(r+1).charAt(c-1) != grid.get(r-1).charAt(c+1);
-            Map<Character, Integer> count = new HashMap<>();
-            char[] chars = {
-                    grid.get(r-1).charAt(c-1),
-                    grid.get(r+1).charAt(c-1),
-                    grid.get(r-1).charAt(c+1),
-                    grid.get(r+1).charAt(c+1)
-            };
-            for(char x: chars){
-                count.put(x,count.getOrDefault(x,0)+1);
-            }
+        char center = grid.get(r).charAt(c);
+        if (center != 'A') return false;
 
-            return diagonal2NotEqual && diagonalNotEqual &&
-                    count.getOrDefault('M', 0) == 2
-                    && count.getOrDefault('S', 0) == 2;
+        char topLeft = grid.get(r - 1).charAt(c - 1);
+        char topRight = grid.get(r - 1).charAt(c + 1);
+        char bottomLeft = grid.get(r + 1).charAt(c - 1);
+        char bottomRight = grid.get(r + 1).charAt(c + 1);
+        if (topLeft == bottomRight || topRight == bottomLeft) return false;
+        int[] count = new int[26];
+        for (char ch : new char[]{topLeft, topRight, bottomLeft, bottomRight}) {
+            count[ch - 'A']++;
         }
-        return false;
+        return count ['M' - 'A'] == 2 && count['S'-'A'] == 2;
+
     }
     public static void main(String[] args) {
         try {
