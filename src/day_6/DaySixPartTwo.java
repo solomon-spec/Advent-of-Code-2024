@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class DaySix {
+public class DaySixPartTwo {
     public static List<String> grid;
     public static boolean[][][] visited;
     public static int[] dx = {-1,0,1,0};
@@ -18,26 +18,28 @@ public class DaySix {
         return 0 <= x && x < row && 0 <= y && y < col;
     }
 
-    public static void dfs(int x, int y){
+    public static boolean dfs(int x, int y){
         if(visited[x][y][curDirection]){
-            return;
+            return true ;
         }
         visited[x][y][curDirection] = true;
         for(int i = 0; i < 4; i++){
             int nextX = x + dx[curDirection];
             int nextY = y + dy[curDirection];
             if(isValidCell(nextX,nextY)){
-                dfs(nextX,nextY);
-                return;
+                return dfs(nextX,nextY);
+
             }
             else{
                 if(!inBound(nextX,nextY)){
-                    return;
+                    return false;
                 }
                 curDirection = (curDirection + 1) % 4;
             }
 
         }
+        return false;
+
 
     }
     public static void main(String[] args) {
@@ -52,27 +54,39 @@ public class DaySix {
             row = grid.size();
             col = grid.getFirst().length();
             visited = new boolean[row][col][4];
+            int startX = 0, startY = 0;
             for(int i = 0; i < row; i++){
                 for(int  j = 0; j < col; j++){
                     if(grid.get(i).charAt(j) == '^'){
-                        System.out.println(i + " " + j);
-                        dfs(i,j);
+                        startX = i;
+                        startY = j;
                     }
                 }
             }
-            int totalVisitedCell = 0;
-            for(boolean[][] row: visited){
-                for(boolean[] cell: row){
-                    boolean cellVisited = false;
-                    for(boolean direction : cell){
-                        cellVisited = cellVisited || direction;
-                    }
-                    if(cellVisited){
-                        totalVisitedCell++;
+            int totalCycle = 0;
+            for(int i = 0; i < row; i++){
+                for(int  j = 0; j < col; j++){
+                    if(grid.get(i).charAt(j) == '.'){
+                        String row = grid.get(i);
+                        String newRow = row.substring(0, j) + '#' + row.substring(j + 1);
+                        grid.set(i,newRow);
+                        for(boolean[][] curRow: visited){
+                            for(boolean[] cell: curRow){
+                                for(int k = 0; k < 4; k++){
+                                    cell[k] = false;
+                                }
+                            }
+                        }
+                        curDirection = 0;
+                        if(dfs(startX,startY)){
+                            totalCycle++;
+                        }
+                        grid.set(i,row);
                     }
                 }
             }
-            System.out.println(totalVisitedCell);
+            System.out.println(totalCycle);
+
 
         } catch (Exception e) {
             throw new RuntimeException(e);
